@@ -1,0 +1,26 @@
+name: Publish Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'   # triggers on semver tags (e.g., v1.0.0)
+
+permissions:
+  id-token: write      # REQUIRED for OIDC
+  contents: read       # required by actions/checkout
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'        # ensures npm >=11.5.1
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm ci
+
+      - run: npm publish --access public
